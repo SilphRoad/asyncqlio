@@ -396,7 +396,7 @@ class Numeric(ColumnType):
         return "{}({}, {})".format(name, self.precision, self.scale)
 
     def on_get(self, row):
-        fmt = '{0:.%df}' % self.scale
+        fmt = '{0:.%d}' % self.scale
         value = fmt.format(row.get_column_value(self.column))
 
         if not self.asdecimal:
