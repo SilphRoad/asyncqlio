@@ -154,7 +154,7 @@ class AiomysqlConnector(BaseConnector):
         logger.info("Connecting to MySQL on mysql://{}:{}/{}".format(self.host, port, self.db))
         self.pool = await aiomysql.create_pool(host=self.host, user=self.username,
                                                password=self.password, port=port,
-                                               db=self.db, **self.params)
+                                               db=self.db, charset='utf8mb4', **self.params)
         return self
 
     async def close(self, forcefully: bool = False):
