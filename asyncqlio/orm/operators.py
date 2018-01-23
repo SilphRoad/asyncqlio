@@ -246,6 +246,20 @@ class In(BaseOperator, ColumnValueMixin):
         return OperatorResponse(sql, params)
 
 
+class NotIn(BaseOperator, ColumnValueMixin):
+    def generate_sql(self, emitter: typing.Callable[[str], str]):
+        # generate a dict of params
+        params = {}
+        l = []
+        for item in self.value:
+            emitted, name = emitter()
+            params[name] = item
+            l.append(emitted)
+
+        sql = "{} NOT IN ({})".format(self.column.quoted_fullname, ", ".join(l))
+        return OperatorResponse(sql, params)
+
+
 class ComparisonOp(ColumnValueMixin, BaseOperator):
     """
     A helper class that implements easy generation of comparison-based operators.
