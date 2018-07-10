@@ -260,6 +260,41 @@ class NotIn(BaseOperator, ColumnValueMixin):
         return OperatorResponse(sql, params)
 
 
+class Between(BaseOperator):
+    def __init__(self, column: 'md_column.Column', min: typing.Any, max: typing.Any):
+        self.column = column
+        self.min = min
+        self.max = max
+
+    def generate_sql(self, emitter: typing.Callable[[str], str]):
+        # generate a dict of params
+        params = {}
+        l = []
+
+        for p in ['min', 'max']:
+            emitted, name = emitter()
+            params[name] = getattr(self, p)
+            l.append(emitted)
+
+        sql = "{} BETWEEN {}".format(self.column.quoted_fullname, ' AND '.join(l))
+        return OperatorResponse(sql, params)
+
+
+class NotBetween(Between):
+    def generate_sql(self, emitter: typing.Callable[[str], str]):
+        # generate a dict of params
+        params = {}
+        l = []
+
+        for p in ['min', 'max']:
+            emitted, name = emitter()
+            params[name] = getattr(self, p)
+            l.append(emitted)
+
+        sql = "{} NOT BETWEEN {}".format(self.column.quoted_fullname, ' AND '.join(l))
+        return OperatorResponse(sql, params)
+
+
 class ComparisonOp(ColumnValueMixin, BaseOperator):
     """
     A helper class that implements easy generation of comparison-based operators.
