@@ -90,7 +90,7 @@ class AiomysqlTransaction(BaseTransaction):
         """
         # parse DictCursor in order to get a dict-like cursor back
         # this will use the custom DictRow class passed from before
-        cursor = await self.connection.cursor(cursor=aiomysql.DictCursor)
+        cursor = await self.connection.cursor(aiomysql.DictCursor)
         # the doc lies btw
         # we can pass a dict in instead of a list/tuple
         # i don't fucking trust this at all though.
@@ -110,7 +110,7 @@ class AiomysqlTransaction(BaseTransaction):
         Returns a :class:`.AiomysqlResultSet` for the specified SQL.
         """
         logger.debug("Executing query {} with params {}".format(sql, params))
-        cursor = await self.connection.cursor(cursor=aiomysql.DictCursor)
+        cursor = await self.connection.cursor(aiomysql.DictCursor)
         await cursor.execute(sql, params)
         return AiomysqlResultSet(cursor)
 
